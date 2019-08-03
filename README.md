@@ -51,3 +51,7 @@ dotnet publish -o bin/publish
 cd bin/publish
 PageNotifier.Worker.exe
 ````
+
+## Firewall
+
+Your firewall may not like the application directly. This is because the application executes a command-line statement to open your browser. Do not worry. Just let your firewall accept it. It is just to open the site you configured yourself. Moreover, you can see anything the application does since it is open source.
