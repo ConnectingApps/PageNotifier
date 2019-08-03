@@ -42,12 +42,17 @@ namespace PageNotifier.Worker.UnitTests
 
             var actualUpdates = await _manager.NotifyUpdates();
 
+            _storageMock.Verify(s => s.GetUrls(), Times.Once);
             _storageMock.Verify(s => s.Initialize(It.IsNotNull<string>()), Times.Once);
             _storageMock.Verify(s => s.UpdatePageCharacters(It.IsNotNull<string>(), It.IsAny<int>()), Times.Exactly(2));
             _readerMock.Verify(r => r.ReadPageAsync(It.IsNotNull<string>()), Times.Exactly(2));
             _websiteShowerMock.Verify(w => w.ShowWebsite("https://www.example.com"), Times.Once);
             _websiteShowerMock.Verify(w => w.ShowWebsite("https://www.example.nl"), Times.Never);
             Assert.Equal(1, actualUpdates);
+
+            _websiteShowerMock.VerifyNoOtherCalls();
+            _readerMock.VerifyNoOtherCalls();
+            _storageMock.VerifyNoOtherCalls();
         }
     }
 }
