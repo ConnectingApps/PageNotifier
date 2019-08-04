@@ -15,8 +15,8 @@ namespace PageNotifier.Worker
         {
             _manager = manager;
             _logger = logger;
-        }
 
+        }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
@@ -32,7 +32,18 @@ namespace PageNotifier.Worker
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 var numberOfUpdates = await _manager.NotifyUpdates();
                 _logger.LogInformation($"Number of updates: {numberOfUpdates}");
-                await Task.Delay(1000, stoppingToken);
+
+                #if DEBUG
+                    // Every second to be able to debug
+                    const int waitTime = 1000;
+                #endif
+
+                #if RELEASE
+                    //Every hour for normal situation
+                    const int waitTime = 3600000;
+                #endif
+
+                await Task.Delay(waitTime, stoppingToken);
             }
 
             _logger.LogInformation("Cancellation requested: {time}", DateTimeOffset.Now);
